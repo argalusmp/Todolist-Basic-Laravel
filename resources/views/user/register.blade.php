@@ -24,24 +24,31 @@
         <div class="row align-items-center g-lg-5 py-5">
             <div class="col-lg-2 text-center text-lg-start">
                 <h2 class="display-2 fs-2 fw-bold lh-1 mb-1">TodoList App</h2>
-                <h2 class="display-2 fw-light lh-1 mb-3">Login</h2>
+                <h2 class="display-2 fw-light lh-1 mb-3">Register</h2>
             </div>
             <div class="col-md-10 mx-auto col-lg-5">
-                <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/login">
+                <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/register">
                     @csrf
                     <div class="form-floating mb-3">
-                        <input name="user" type="text" class="form-control" id="user" placeholder="id">
-                        <label for="user">User</label>
+                        <input name="username" type="text"
+                            class="form-control @error('username') is-invalid @enderror" id="username"
+                            placeholder="Username..." required value="{{ old('username') }}">
+                        <label for="username">User</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                            id="email" placeholder="email@example.com" autocomplete="off" required
+                            value="{{ old('email') }}">
+                        <label for="email">Email</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input name="password" type="password" class="form-control" id="password"
-                            placeholder="password">
+                            placeholder="password" required>
                         <label for="password">Password</label>
                     </div>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
                 </form>
             </div>
-            <small class="d-block text-center mt-3">Not Registered? <a href="/register">Register Now!</a></small>
         </div>
     </div>
 

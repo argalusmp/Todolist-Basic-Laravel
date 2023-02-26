@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TodolistController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserRegisterController;
 use App\Http\Middleware\OnlyGuestMiddleware;
 use App\Http\Middleware\OnlyMemberMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -32,4 +33,10 @@ Route::controller(TodolistController::class)
         Route::get('/todolist', 'todoList');
         Route::post('/todolist', 'addTodo');
         Route::post('/todolist/{id}/delete', 'removeTodo');
+    });
+
+Route::controller(UserRegisterController::class)
+    ->group(function () {
+        Route::get('/register', 'index');
+        Route::post('/register', 'store');
     });

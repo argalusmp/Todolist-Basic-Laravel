@@ -3,6 +3,7 @@
 namespace App\Services\Implement;
 
 use App\Services\UserService;
+use App\Models\User;
 
 class UserServiceImplement implements UserService
 {
