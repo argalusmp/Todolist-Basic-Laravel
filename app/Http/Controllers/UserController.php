@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
 class UserController extends Controller
 {
     private UserService $userService;
@@ -32,7 +33,7 @@ class UserController extends Controller
         // validate input
         if (empty($user) || empty($password)) {
             return response()->view("user.login", [
-                "title" => "Loginjbbib",
+                "title" => "Login",
                 "error" => "User or password is required"
             ]);
         }
