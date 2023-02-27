@@ -14,10 +14,5 @@ class HomeController extends Controller
         } else {
             return redirect('/login');
         }
-        // if ($request->session()->exists('username')) {
-        //     return redirect('/todolist');
-        // } else {
-        //     return redirect('/login');
-        // }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OnlyGuestMiddleware
 {
@@ -16,10 +17,10 @@ class OnlyGuestMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->session()->exists('username')) {
-            return redirect('/');
-        } else {
-            return $next($request);
+        if (Auth::check()) {
+            return redirect()->route('todolist');
         }
+
+        return $next($request);
     }
 }

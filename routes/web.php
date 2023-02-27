@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRegisterController;
 use App\Http\Middleware\OnlyGuestMiddleware;
 use App\Http\Middleware\OnlyMemberMiddleware;
+use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'home']);
+// Route::get('/', [HomeController::class, 'home']);
+Route::get('/', [UserController::class, 'login'])->name('check')->middleware([OnlyGuestMiddleware::class]);
 
 Route::view('/template', 'template');
 Route::controller(UserController::class)->group(function () {
@@ -30,7 +32,7 @@ Route::controller(UserController::class)->group(function () {
 
 Route::controller(TodolistController::class)
     ->middleware([OnlyMemberMiddleware::class])->group(function () {
-        Route::get('/todolist', 'todoList');
+        Route::get('/todolist', 'todoList')->name('todolist');
         Route::post('/todolist', 'addTodo');
         Route::post('/todolist/{id}/delete', 'removeTodo');
     });
