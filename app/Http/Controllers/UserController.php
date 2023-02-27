@@ -6,7 +6,7 @@ use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -25,33 +25,33 @@ class UserController extends Controller
             ]);
     }
 
-    public function doLogin(Request $request): Response|RedirectResponse
+    public function doLogin(Request $request)
     {
-        $user = $request->input('user');
-        $password = $request->input('password');
+
 
         // validate input
-        if (empty($user) || empty($password)) {
-            return response()->view("user.login", [
-                "title" => "Login",
-                "error" => "User or password is required"
-            ]);
-        }
-
-        if ($this->userService->login($user, $password)) {
-            $request->session()->put("user", $user);
-            return redirect("/");
-        }
-
-        return response()->view("user.login", [
-            "title" => "Login",
-            "error" => "User or password is wrong"
+        $credentials = $request->validate([
+            'username' => ['required'],
+            'password' => ['required']
         ]);
+
+        $username = $credentials['username'];
+        $password = $credentials['password'];
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->put('username', $username);
+            return redirect()->intended('/todolist');
+        }
+
+        return back()->with('loginError', 'login failed!');
     }
 
     public function doLogout(Request $request): RedirectResponse
     {
-        $request->session()->forget("user");
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        $request->session()->forget("username");
         return redirect("/");
     }
 }
