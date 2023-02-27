@@ -13,11 +13,16 @@
 
 <body>
     <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-        @if (isset($error))
-            <div class="row">
-                <div class="alert alert-danger" role="alert">
-                    {{ $error }}
-                </div>
+        @if (session()->has('loginError'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('loginError') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -30,12 +35,19 @@
                 <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/login">
                     @csrf
                     <div class="form-floating mb-3">
-                        <input name="user" type="text" class="form-control" id="user" placeholder="id">
-                        <label for="user">User</label>
+                        <input name="username" type="text"
+                            class="form-control @error('username') is-invalid @enderror" id="username"
+                            placeholder="username" autofocus required value="{{ old('username') }}">
+                        <label for="username">Username</label>
+                        @error('username')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="form-floating mb-3">
                         <input name="password" type="password" class="form-control" id="password"
-                            placeholder="password">
+                            placeholder="password" required>
                         <label for="password">Password</label>
                     </div>
                     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>

@@ -37,8 +37,8 @@ class UserRegisterController extends Controller
         $password = $validateData['password'];
 
         if ($this->registerService->register($username, $email, $password)) {
-            $request->session()->put("username", $username);
-            return redirect("/");
+            // session()->flash('Success', 'Registration Successfull!');
+            return redirect("/login")->with('success', 'Registration Successfull!');
         }
 
         return response()->view("user.register", [
