@@ -19,6 +19,7 @@ class UserController extends Controller
 
     public function login(): Response
     {
+
         return response()
             ->view("user.login", [
                 "title" => "Login"
@@ -27,19 +28,15 @@ class UserController extends Controller
 
     public function doLogin(Request $request)
     {
-
-
         // validate input
         $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required']
+            'username' => 'required',
+            'password' => 'required|min:5'
         ]);
+        // $username = $credentials['username'];
+        // $password = $credentials['password'];
 
-        $username = $credentials['username'];
-        $password = $credentials['password'];
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->put('username', $username);
+        if ($this->userService->login($credentials)) {
             return redirect()->intended('/todolist');
         }
 
