@@ -2,41 +2,45 @@
 
 namespace App\Services\Implement;
 
+use App\Models\Todolist;
 use App\Services\TodolistService;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class TodolistServiceImplement implements TodolistService
 {
 
-    public function saveTodo(string $id, string $todo, string $subjek): void
+    public function saveTodo(string $todo, string $subjek): void
     {
-        if (!Session::exists("todolist")) {
-            Session::put("todolist", []);
-        }
 
-        Session::push("todolist", [
-            "id" => $id,
-            "todo" => $todo,
-            "subjek" => $subjek
-        ]);
+        DB::insert('INSERT INTO `todolists`(subjek,todo,user_id) VALUES (?,?,?)', [$subjek, $todo, auth()->user()->id]);
     }
 
     public function getTodolist(): array
     {
-        return Session::get("todolist", []);
+        $query = DB::select('SELECT * FROM `todolists` WHERE user_id = :id', ['id' => auth()->user()->id]);
+        return $query;
     }
 
-    public function removeTodo(string $todoId)
+    public function getTodolistbyID($todoId)
     {
-        $todolist = Session::get("todolist");
+        $todo = DB::table('todolists')->where('id', '=', $todoId)->first();
 
-        foreach ($todolist as $index => $value) {
-            if ($value['id'] == $todoId) {
-                unset($todolist[$index]);
-                break;
-            }
-        }
+        return $todo;
+    }
 
-        Session::put("todolist", $todolist);
+    public function removeTodo(int $todoId)
+    {
+        $query = DB::delete('DELETE FROM `todolists` WHERE id = :todoId', ['todoId' => $todoId]);
+        return $query;
+    }
+
+    public function updateTodo(string $todo, string $subjek,  $todoId)
+    {
+
+        Todolist::where('id', $todoId)
+            ->update([
+                'subjek' => $subjek,
+                'todo' => $todo
+            ]);
     }
 }

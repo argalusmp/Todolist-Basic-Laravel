@@ -37,7 +37,7 @@ class UserController extends Controller
         // $password = $credentials['password'];
 
         if ($this->userService->login($credentials)) {
-            return redirect()->intended('/todolist');
+            return redirect()->intended('/todolist')->with('welcomeBack', 'welcome back ');
         }
 
         return back()->with('loginError', 'login failed!');
@@ -48,7 +48,7 @@ class UserController extends Controller
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
-        $request->session()->forget("username");
+        // $request->session()->forget("username");
         return redirect("/");
     }
 }

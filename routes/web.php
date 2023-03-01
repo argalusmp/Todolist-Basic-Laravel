@@ -35,6 +35,8 @@ Route::controller(TodolistController::class)
         Route::get('/todolist', 'todoList')->name('todolist');
         Route::post('/todolist', 'addTodo');
         Route::post('/todolist/{id}/delete', 'removeTodo');
+        Route::post('/todolist/{id}/update', 'updateTodo');
+        Route::get('/todolist/{id}/edit', 'edit');
     });
 
 Route::controller(UserRegisterController::class)

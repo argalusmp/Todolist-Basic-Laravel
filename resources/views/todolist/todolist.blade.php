@@ -25,6 +25,30 @@
             </div>
         @endif
 
+        @if (session()->has('welcomeBack'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('welcomeBack') }}
+                {{ auth()->user()->username }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session()->has('update-success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('update-success') }}
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session()->has('delete-success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('delete-success') }}
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row">
             <form method="post" action="/logout">
                 @csrf
@@ -38,86 +62,96 @@
             </div>
         </div>
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTodo">
+        <!-- Button trigger modal Create Todolist -->
+        <button type="button" class="btn btn-primary AddTodoBtn" data-bs-toggle="modal"
+            data-bs-target="#ModalCreateUpdateTodo">
             Add Todo
         </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="addTodo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog  modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add Todo List</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="post" action="/todolist">
-                        <div class="modal-body">
-
-                            @csrf
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="subjek" placeholder="subjek">
-                                <label for="subjek">Subjek</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control mb-2" name="todo" placeholder="todo">
-                                <label for="todo">Todo</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Todo</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
 
     </div>
     <div class="container col-xl-10 col-xxl-8 px-4 py-5">
         <div class="mx-auto">
-            {{-- <form id="deleteForm" method="post" style="display: none">
 
-            </form> --}}
             <table class="table table-hover ">
                 <thead class="bg-info text-dark">
                     <tr>
-                        <th scope="col">#ID</th>
+                        <th scope="col">Index</th>
                         <th scope="col">Subjek</th>
                         <th scope="col">Todo</th>
-                        <th scope="col"></th>
+                        <th scope="col">Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($todolist as $todo)
                         <tr>
-                            <th scope="row">{{ $todo['id'] }}</th>
-                            <td>{{ $todo['todo'] }}</td>
-                            <td>{{ $todo['subjek'] }}</td>
+                            <td scope="row">{{ $loop->iteration }}</td>
+                            <td>{{ $todo->subjek }}</td>
+                            <td>{{ $todo->todo }}</td>
                             <td>
-                                <form action="/todolist/{{ $todo['id'] }}/delete" method="post">
+                                <a href="/todolist/{{ $todo->id }}/edit" class="badge bg-info OpenModalUpdate "
+                                    data-bs-toggle="modal" data-bs-target="#ModalCreateUpdateTodo"
+                                    data-id="{{ $todo->id }} "><i class="fa-solid fa-sm fa-pen-to-square"></i></a>
+                                <form action="/todolist/{{ $todo->id }}/delete" method="post" class="d-inline">
                                     @csrf
-
-                                    <button class="w-75 btn btn-lg btn-danger" type="submit"><i
-                                            class="fa-regular fa-trash-can mx-auto"></i></button>
+                                    <button class="badge bg-danger border-0" type="submit"
+                                        onclick="return confirm('Are You Sure?')"><i
+                                            class="fa-regular
+                                        fa-sm fa-trash-can mx-auto"></i></button>
                                 </form>
+
                             </td>
                         </tr>
+                        <!-- Modal Update Todolist-->
+                        <div class="modal fade" id="ModalCreateUpdateTodo" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog  modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="FormModalLabel">Update Todo List</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    {{-- action change in jQuery in File script.js in public/js folder --}}
+                                    <form method="post" action="todolist/{{ $todo->id }}/update">
+                                        <input type="hidden" name="edit-id" id="edit-id">
+                                        <div class="modal-body">
+                                            @csrf
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" name="subjek"
+                                                    placeholder="subjek" id="edit-subjek" required
+                                                    value="{{ old('subjek') }}">
+                                                <label for="subjek">Subjek</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control mb-2" name="todo"
+                                                    placeholder="todo" value="{{ old('todo') }}" id="edit-todo"
+                                                    required>
+                                                <label for="todo">Todo</label>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
-    </div>
-    </div>
 
-    <script>
-        $(document).ready(function() {
-            $("#myBtn").click(function() {
-                $("#myModal").modal();
-            });
-        });
-    </script>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+        integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
+
 </body>
 
 </html>
